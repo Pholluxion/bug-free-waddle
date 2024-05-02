@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fronted-catalog
+  namespace: fronteds
+  labels:
+    app: fronted-catalog
+spec:
+  replicas: 1
+  selector: 
+    matchLabels:
+      app: fronted-catalog
+  template:
+    metadata:
+      labels:
+        app: fronted-catalog
+    spec:
+      containers: 
+      - name: fronted-catalog-container
+        image: chaphe/frontend-catalog-image:1.0
+        ports:
+        - containerPort: 80
+        env:
+        - name: CATALOG_URL
+          value: http://localhost:32374
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fronted-catalog-service
+  namespace: fronteds
+spec:
+  type: NodePort
+  selector:
+    app: fronted-catalog
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
